@@ -1,0 +1,10 @@
+# .NET
+bin/
+obj/
+
+# VS Code
+.vs/
+*.user
+
+# Local settings
+appsettings.*.local.json
