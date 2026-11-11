@@ -22,7 +22,7 @@ namespace backend.Controllers
             return Ok(await _service.GetAllAsync());
         }
 
-        // GET: api/Projects/5
+        // GET: api/Projects/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectDto>> GetProject(int id)
         {
