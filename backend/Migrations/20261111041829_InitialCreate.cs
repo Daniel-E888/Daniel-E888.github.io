@@ -1,0 +1,68 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
+namespace backend.Migrations
+{
+    /// <inheritdoc />
+    public partial class InitialCreate : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Blogposts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Titel = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Inhoud = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Publicatiedatum = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Blogposts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Projects",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Titel = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Beschrijving = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Categorie = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GitHubUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Datum = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Projects", x => x.Id);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Blogposts",
+                columns: new[] { "Id", "Inhoud", "Publicatiedatum", "Titel" },
+                values: new object[,]
+                {
+                    { 1, "Inhoud van eerste blogpost.", new DateTime(2025, 1, 10, 0, 0, 0, 0, DateTimeKind.Unspecified), "Blogpost 1" },
+                    { 2, "Inhoud van tweede blogpost.", new DateTime(2025, 2, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Blogpost 2" }
+                });
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Blogposts");
+
+            migrationBuilder.DropTable(
+                name: "Projects");
+        }
+    }
+}
