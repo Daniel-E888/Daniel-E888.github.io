@@ -38,7 +38,7 @@ Hoe een request voor `GET /api/projects` door de applicatie loopt:
 
 ![Lagendiagram: GET api/projects van request tot response](diagram.png)
 
-Blogposts volgen exact dezelfde laagindeling: `BlogpostsController` → `BlogpostService` → dezelfde `PortfolioDbContext` → SQL Server, en terug als `BlogpostDto`.
+Blogposts volgen exact dezelfde laagindeling: `BlogpostsController` -> `BlogpostService` -> dezelfde `PortfolioDbContext` -> SQL Server, en terug als `BlogpostDto`.
 
 ## SQL Server configureren
 
