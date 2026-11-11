@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using backend.Data;
-using backend.Models;
+using backend.DTOs;
+using backend.Services;
 
 namespace backend.Controllers
 {
@@ -14,93 +8,50 @@ namespace backend.Controllers
     [ApiController]
     public class ProjectsController : ControllerBase
     {
-        private readonly PortfolioDbContext _context;
+        private readonly ProjectService _service;
 
-        public ProjectsController(PortfolioDbContext context)
+        public ProjectsController(ProjectService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // GET: api/Projects
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Project>>> GetProjects()
+        public async Task<ActionResult<IEnumerable<ProjectDto>>> GetProjects()
         {
-            return await _context.Projects.ToListAsync();
+            return Ok(await _service.GetAllAsync());
         }
 
         // GET: api/Projects/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Project>> GetProject(int id)
+        public async Task<ActionResult<ProjectDto>> GetProject(int id)
         {
-            var project = await _context.Projects.FindAsync(id);
-
-            if (project == null)
-            {
-                return NotFound();
-            }
-
-            return project;
-        }
-
-        // PUT: api/Projects/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutProject(int id, Project project)
-        {
-            if (id != project.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(project).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProjectExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            var project = await _service.GetByIdAsync(id);
+            return project == null ? NotFound() : Ok(project);
         }
 
         // POST: api/Projects
         [HttpPost]
-        public async Task<ActionResult<Project>> PostProject(Project project)
+        public async Task<ActionResult<ProjectDto>> PostProject(ProjectCreateDto dto)
         {
-            _context.Projects.Add(project);
-            await _context.SaveChangesAsync();
+            var created = await _service.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetProject), new { id = created.Id }, created);
+        }
 
-            return CreatedAtAction("GetProject", new { id = project.Id }, project);
+        // PUT: api/Projects/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutProject(int id, ProjectCreateDto dto)
+        {
+            var updated = await _service.UpdateAsync(id, dto);
+            return updated ? NoContent() : NotFound();
         }
 
         // DELETE: api/Projects/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(int id)
         {
-            var project = await _context.Projects.FindAsync(id);
-            if (project == null)
-            {
-                return NotFound();
-            }
-
-            _context.Projects.Remove(project);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool ProjectExists(int id)
-        {
-            return _context.Projects.Any(e => e.Id == id);
+            var deleted = await _service.DeleteAsync(id);
+            return deleted ? NoContent() : NotFound();
         }
     }
 }
