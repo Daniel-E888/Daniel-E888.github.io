@@ -29,5 +29,29 @@ namespace backend.Controllers
             var blogpost = await _service.GetByIdAsync(id);
             return blogpost == null ? NotFound() : Ok(blogpost);
         }
+
+        // POST: api/Blogposts
+        [HttpPost]
+        public async Task<ActionResult<BlogpostDto>> PostBlogpost(BlogpostCreateDto dto)
+        {
+            var created = await _service.CreateAsync(dto);
+            return CreatedAtAction(nameof(GetBlogpost), new { id = created.Id }, created);
+        }
+
+        // PUT: api/Blogposts/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutBlogpost(int id, BlogpostCreateDto dto)
+        {
+            var updated = await _service.UpdateAsync(id, dto);
+            return updated ? NoContent() : NotFound();
+        }
+
+        // DELETE: api/Blogposts/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBlogpost(int id)
+        {
+            var deleted = await _service.DeleteAsync(id);
+            return deleted ? NoContent() : NotFound();
+        }
     }
 }
